@@ -97,6 +97,12 @@
             android:layout_height="50dp"
             android:background="?android:attr/listDivider" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+        </androidx.recyclerview.widget.RecyclerView>
+
         <Spinner
             android:id="@+id/sampleSpinner"
             android:layout_width="match_parent"

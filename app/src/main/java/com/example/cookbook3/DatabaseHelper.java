@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+    private final Context context;
     private static final String dbName = "cookBook";
     private static final String catTable = "categories";
     private static final String recTable = "recipes";
@@ -39,16 +40,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String shopListCol4 = "quantity";
     private static final String shopListCol5 = "unit";
     private static final String shopListCol6 = "purchase";
-    private static final String[] tables = {"categories", "recipes", "ingredients", "recipeIngredients", "recipePreparations", "shoppingList"};
-    private static final String[] categoriesCol = {"categoryID", "categoryName"};
-    private static final String[] recipesCol = {"recipeID", "recipeName", "description","categoryID"};
-    private static final String[] ingredientsCol = {"ingredientID", "ingredientName"};
-    private static final String[] recipeIngredientsCol = {"recipe_IngredientsID", "recipeID", "ingredientID", "quantity", "unit"};
-    private static final String[] recipePreparationsCol = {"recipe_PreparationsID", "recipeID", "stepNumber", "description"};
-    private static final String[] shoppingListCol = {"shoppingListID", "recipeID", "ingredientID", "quantity", "unit", "purchase"};
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, dbName, null, 1);
+        this.context = context;
     }
 
     // Create the database tables
@@ -115,8 +110,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(catCol2, catName);
         long result = db.insert(catTable, null, cv);
         if (result == -1) {
-            Toast.makeText()
+            Toast.makeText(null, "Failed to add category", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(null, "Category added successfully", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     void addRecipe(String recName, String recDesc, int catID) {
