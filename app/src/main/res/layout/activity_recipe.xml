@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#FFAF53"
     android:orientation="vertical"
-    tools:context=".RecipeActivity">
+    tools:context=".CategoryPage">
 
     <LinearLayout
         android:layout_width="match_parent"

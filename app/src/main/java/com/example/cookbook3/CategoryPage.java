@@ -10,11 +10,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class RecipeActivity extends AppCompatActivity {
+public class CategoryPage extends AppCompatActivity {
 
+    ImageButton returnBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ImageButton returnbtn;
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_recipe);
@@ -24,10 +25,10 @@ public class RecipeActivity extends AppCompatActivity {
             return insets;
         });
 
-        returnbtn = findViewById(R.id.returnBtn);
+        returnBtn = findViewById(R.id.returnBtn);
 
-        returnbtn.setOnClickListener(v -> {
-            Intent intent1 = new Intent(RecipeActivity.this, com.example.cookbook3.MainActivity.class);
+        returnBtn.setOnClickListener(v -> {
+            Intent intent1 = new Intent(CategoryPage.this, com.example.cookbook3.MainActivity.class);
             startActivity(intent1);
         });
     }

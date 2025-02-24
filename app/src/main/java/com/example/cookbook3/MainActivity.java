@@ -2,7 +2,6 @@ package com.example.cookbook3;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
@@ -29,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         grocery = findViewById(R.id.groceryBtn);
 
         recipe.setOnClickListener(v -> {
-            Intent intent1 = new Intent(MainActivity.this, RecipeActivity.class);
+            Intent intent1 = new Intent(MainActivity.this, CategoryPage.class);
             startActivity(intent1);
         });
     }
