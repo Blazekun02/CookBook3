@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -27,7 +26,6 @@ public class CategoryPage extends AppCompatActivity {
 
     ImageButton returnBtn;
     Button addF;
-    RecyclerView recyclerView;
     DatabaseHelper myDB;
     SQLiteDatabase db;
     ArrayList<String> categories = new ArrayList<>();
@@ -46,7 +44,6 @@ public class CategoryPage extends AppCompatActivity {
         myDB = new DatabaseHelper(CategoryPage.this);
         db = myDB.getWritableDatabase();
 
-        recyclerView = findViewById(R.id.categoryRecyclerView);
         returnBtn = findViewById(R.id.returnBtn);
         addF = findViewById(R.id.addBtn);
 
@@ -58,7 +55,7 @@ public class CategoryPage extends AppCompatActivity {
 
         addF.setOnClickListener(v -> showAddCategoryDialog());
         // Display the categories in the recycler view
-        displayData();
+        displayCategories();
 
     }
 
@@ -149,16 +146,37 @@ public class CategoryPage extends AppCompatActivity {
         return categories.contains(categoryName);
     }
 
-    void displayData() {
-        // Display the categories in the recycler view
+    void displayCategories() {
         Cursor cursor = myDB.readCategories();
+        LinearLayout categoryContainer = findViewById(R.id.categoryContainer);
+        categoryContainer.removeAllViews(); // Clear old views
+
         if (cursor.getCount() == 0) {
             Toast.makeText(this, "No data to display", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
-                categories.add(cursor.getString(0));
-                categories.add(cursor.getString(1));
+                String categoryName = cursor.getString(0); // Assuming first column contains category name
+
+                // Create a new button for the category
+                Button categoryButton = new Button(this);
+                categoryButton.setText(categoryName);
+                categoryButton.setPadding(20, 10, 20, 10);
+                categoryButton.setBackgroundColor(Color.parseColor("#FF9800")); // Orange color
+                categoryButton.setTextColor(Color.WHITE);
+
+                // Set button click action
+                categoryButton.setOnClickListener(v -> {
+                    Toast.makeText(this, "Clicked: " + categoryName, Toast.LENGTH_SHORT).show();
+                    // You can start a new activity or show recipes in this category
+                    Intent intent = new Intent(CategoryPage.this, RecipePage.class);
+                    intent.putExtra("CATEGORY_NAME", categoryName);
+                    startActivity(intent);
+                });
+
+                // Add button to the container layout
+                categoryContainer.addView(categoryButton);
             }
         }
+        cursor.close();
     }
 }

@@ -136,7 +136,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     void compareCategory(String catName) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + catTable + " WHERE " + catCol2 + " = '" + catName + "';", null);
-        return cursor;
+//        return cursor;
 
     }
 
