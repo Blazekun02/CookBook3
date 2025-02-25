@@ -16,7 +16,7 @@
         android:layout_weight="0">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/returntomenuBtns"
             android:layout_width="253dp"
             android:layout_height="92dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -28,11 +28,12 @@
             android:id="@+id/returntocategoryBtns"
             android:layout_width="53dp"
             android:layout_height="52dp"
+            android:layout_marginTop="20dp"
             android:background="#00000000"
             android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/back"
-            tools:layout_editor_absoluteY="20dp" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/back" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -46,6 +47,7 @@
             android:layout_height="match_parent">
 
             <LinearLayout
+                android:id="@+id/recipesContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />

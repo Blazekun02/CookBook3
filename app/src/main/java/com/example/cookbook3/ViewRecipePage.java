@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 public class ViewRecipePage extends AppCompatActivity {
 
     DatabaseHelper myDB;
+    ImageButton returnBtn;
     TextView tvRecipeName, tvRecipeDescription;
     ListView listViewIngredients, listViewSteps;
     Button editViewRecipeBtn;
@@ -50,11 +52,22 @@ public class ViewRecipePage extends AppCompatActivity {
         tvRecipeDescription = findViewById(R.id.descDisplay);
         listViewIngredients = findViewById(R.id.listViewIngredients);
         listViewSteps = findViewById(R.id.listViewSteps);
+        returnBtn = findViewById(R.id.returnToRecipeBtn);
         editViewRecipeBtn = findViewById(R.id.editViewRecipeBtn);
 
         Intent intent = getIntent();
         recipeID = intent.getIntExtra("RECIPE_ID", -1);
 
+        if (recipeID != -1) {
+            loadRecipeDetails();
+            loadIngredients();
+        }
+
+        returnBtn.setOnClickListener(v -> {
+            Intent intent1 = new Intent(ViewRecipePage.this, RecipeListPage.class);
+            startActivity(intent1);
+            finish();
+        });
         // Load Recipe Data
         loadRecipeDetails();
         loadIngredients();

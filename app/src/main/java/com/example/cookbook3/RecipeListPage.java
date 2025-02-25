@@ -35,7 +35,7 @@ public class RecipeListPage extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        returnBtn = findViewById(R.id.returnToRecipeListBtn);
+        returnBtn = findViewById(R.id.returntocategoryBtns);
         addRecipe = findViewById(R.id.addRecipeBtn);
 
         myDB = new DatabaseHelper(RecipeListPage.this);

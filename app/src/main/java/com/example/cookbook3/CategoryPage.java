@@ -38,7 +38,7 @@ public class CategoryPage extends AppCompatActivity {
 
         myDB = new DatabaseHelper(CategoryPage.this);
 
-        returnBtn = findViewById(R.id.returnToRecipeListBtn);
+        returnBtn = findViewById(R.id.returnToRecipeBtn);
         addCategory = findViewById(R.id.addCategoryBtn);
 
         returnBtn.setOnClickListener(v -> {
