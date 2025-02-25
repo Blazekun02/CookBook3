@@ -130,6 +130,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void addRecipe(String recipeName, String description, Integer categoryID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(recCol2, recipeName);
+        cv.put(recCol3, description);
+        cv.put(recCol4, categoryID);
+        db.insert(recTable, null, cv);
+        db.close();
+    }
+
     public void updateCategory(String categoryId, String newCategoryName) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

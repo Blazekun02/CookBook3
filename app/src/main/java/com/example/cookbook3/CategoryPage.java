@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.graphics.Color;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,8 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import java.util.ArrayList;
 
 public class CategoryPage extends AppCompatActivity {
 
@@ -41,8 +38,8 @@ public class CategoryPage extends AppCompatActivity {
 
         myDB = new DatabaseHelper(CategoryPage.this);
 
-        returnBtn = findViewById(R.id.returnBtn);
-        addF = findViewById(R.id.addBtn);
+        returnBtn = findViewById(R.id.returntocategoryBtns);
+        addF = findViewById(R.id.addRecipeBtn);
 
         returnBtn.setOnClickListener(v -> {
             Intent intent1 = new Intent(CategoryPage.this, MainActivity.class);
@@ -124,7 +121,7 @@ public class CategoryPage extends AppCompatActivity {
                 });
 
                 categoryButton.setOnClickListener(v -> {
-                    Intent intent = new Intent(CategoryPage.this, RecipePage.class);
+                    Intent intent = new Intent(CategoryPage.this, RecipeListPage.class);
                     intent.putExtra("CATEGORY_NAME", categoryName);
                     startActivity(intent);
                 });

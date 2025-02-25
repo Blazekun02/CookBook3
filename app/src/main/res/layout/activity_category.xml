@@ -9,6 +9,8 @@
     android:orientation="vertical"
     tools:context=".CategoryPage">
 
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,9 +42,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_weight="0"
-                android:text="Category"
+                android:text="TextView"
                 android:textAlignment="center"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                tools:text="Recipes" />
 
         </LinearLayout>
 
@@ -73,7 +76,7 @@
                     android:background="#FFC107" />
 
                 <ImageButton
-                    android:id="@+id/returnBtn"
+                    android:id="@+id/returntocategoryBtns"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="-50"
@@ -93,7 +96,8 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/material_emphasis_medium">
 
             <LinearLayout
                 android:id="@+id/categoryContainer"
@@ -103,10 +107,10 @@
         </ScrollView>
 
         <Button
-            android:id="@+id/addBtn"
+            android:id="@+id/addRecipeBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add Folder" />
+            android:text="Add Recipe" />
     </LinearLayout>
 
 </LinearLayout>

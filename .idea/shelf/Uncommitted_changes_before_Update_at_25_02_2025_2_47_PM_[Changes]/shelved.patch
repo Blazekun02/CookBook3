@@ -1,0 +1,40 @@
+Index: app/src/main/java/com/example/cookbook3/RecipePage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.cookbook3;\r\n\r\npublic class RecipePage {\r\n}\r\n
+===================================================================
+diff --git a/app/src/main/java/com/example/cookbook3/RecipePage.java b/app/src/main/java/com/example/cookbook3/RecipePage.java
+--- a/app/src/main/java/com/example/cookbook3/RecipePage.java	(revision dc270ae361428410ce29c628ee5e6a0b04b290be)
++++ b/app/src/main/java/com/example/cookbook3/RecipePage.java	(date 1740464043183)
+@@ -1,4 +1,28 @@
+ package com.example.cookbook3;
+ 
+-public class RecipePage {
+-}
++import android.os.Bundle;
++import android.widget.Button;
++
++import androidx.activity.EdgeToEdge;
++import androidx.appcompat.app.AppCompatActivity;
++import androidx.core.graphics.Insets;
++import androidx.core.view.ViewCompat;
++import androidx.core.view.WindowInsetsCompat;
++
++public class RecipePage extends AppCompatActivity {
++    Button addRecipe;
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        EdgeToEdge.enable(this);
++        setContentView(R.layout.activity_recipe_page);
++        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
++            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++            return insets;
++        });
++        addRecipe = findViewById(R.id.addRecipeBtn);
++
++    }
++}
+\ No newline at end of file

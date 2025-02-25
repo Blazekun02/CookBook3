@@ -1,0 +1,275 @@
+Index: app/src/main/java/com/example/cookbook3/CategoryPage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.cookbook3;\r\n\r\nimport android.content.Intent;\r\nimport android.database.Cursor;\r\nimport android.database.sqlite.SQLiteDatabase;\r\nimport android.graphics.Color;\r\nimport android.os.Bundle;\r\nimport android.view.Gravity;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.ImageButton;\r\nimport android.widget.LinearLayout;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.activity.EdgeToEdge;\r\nimport androidx.appcompat.app.AlertDialog;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.core.graphics.Insets;\r\nimport androidx.core.view.ViewCompat;\r\nimport androidx.core.view.WindowInsetsCompat;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport java.util.ArrayList;\r\n\r\npublic class CategoryPage extends AppCompatActivity {\r\n\r\n    ImageButton returnBtn;\r\n    Button addF;\r\n    DatabaseHelper myDB;\r\n    SQLiteDatabase db;\r\n    ArrayList<String> categories = new ArrayList<>();\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n\r\n        super.onCreate(savedInstanceState);\r\n        EdgeToEdge.enable(this);\r\n        setContentView(R.layout.activity_category);\r\n        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {\r\n            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());\r\n            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);\r\n            return insets;\r\n        });\r\n        myDB = new DatabaseHelper(CategoryPage.this);\r\n        db = myDB.getWritableDatabase();\r\n\r\n        returnBtn = findViewById(R.id.returnBtn);\r\n        addF = findViewById(R.id.addBtn);\r\n\r\n\r\n        returnBtn.setOnClickListener(v -> {\r\n            Intent intent1 = new Intent(CategoryPage.this, com.example.cookbook3.MainActivity.class);\r\n            startActivity(intent1);\r\n        });\r\n\r\n        addF.setOnClickListener(v -> showAddCategoryDialog());\r\n        // Display the categories in the recycler view\r\n        displayCategories();\r\n\r\n    }\r\n\r\n    private void showAddCategoryDialog() {\r\n        AlertDialog.Builder builder = new AlertDialog.Builder(this);\r\n        builder.setTitle(\"Set Category\");\r\n\r\n        // Layout for inputs\r\n        LinearLayout layout = new LinearLayout(this);\r\n        layout.setOrientation(LinearLayout.VERTICAL);\r\n        layout.setPadding(50, 30, 50, 30);\r\n\r\n        // Category Name Input\r\n        final EditText inputCatName = new EditText(this);\r\n        inputCatName.setHint(\"Enter Category name\");\r\n        layout.addView(inputCatName);\r\n\r\n        builder.setView(layout);\r\n\r\n        // Create the dialog\r\n        AlertDialog dialog = builder.create();\r\n\r\n        dialog.show(); // Show the dialog first\r\n\r\n        // Create a horizontal layout for buttons\r\n        LinearLayout buttonLayout = new LinearLayout(dialog.getContext());\r\n        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);\r\n        buttonLayout.setGravity(Gravity.END);\r\n        buttonLayout.setPadding(0, 20, 0, 0);\r\n\r\n        // Layout parameters for buttons with spacing\r\n        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(\r\n                LinearLayout.LayoutParams.WRAP_CONTENT,\r\n                LinearLayout.LayoutParams.WRAP_CONTENT\r\n        );\r\n        buttonParams.setMargins(20, 0, 0, 0); // Add margin between buttons\r\n\r\n        // \"Cancel\" button\r\n        Button cancelButton = new Button(dialog.getContext());\r\n        cancelButton.setText(\"Cancel\");\r\n        cancelButton.setTextSize(16);\r\n        cancelButton.setPadding(20, 10, 20, 10);\r\n        cancelButton.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));\r\n        cancelButton.setTextColor(Color.WHITE);\r\n        cancelButton.setLayoutParams(buttonParams);\r\n        cancelButton.setOnClickListener(v -> dialog.dismiss());\r\n\r\n        // \"Add\" button\r\n        Button addButton = new Button(dialog.getContext());\r\n        addButton.setText(\"Add\");\r\n        addButton.setTextSize(16);\r\n        addButton.setPadding(20, 10, 20, 10);\r\n        addButton.setBackgroundColor(Color.parseColor(\"#FFC107\")); // Yellow button\r\n        addButton.setTextColor(Color.WHITE);\r\n        addButton.setLayoutParams(buttonParams);\r\n\r\n        // Add buttons to layout\r\n        buttonLayout.addView(cancelButton);\r\n        buttonLayout.addView(addButton);\r\n\r\n        layout.addView(buttonLayout); // Add buttons to main layout\r\n\r\n        // Custom \"Add\" button validation\r\n        addButton.setOnClickListener(v -> {\r\n            String categoryName = inputCatName.getText().toString().trim();\r\n\r\n            // Validate inputs\r\n            if (categoryName.isEmpty()) {\r\n                inputCatName.setError(\"Category name cannot be empty!\");\r\n                return;\r\n            }\r\n            if (isCategoryAlreadyExists(categoryName)) {\r\n                Toast.makeText(v.getContext(), \"Subject already exists! Choose a different name.\", Toast.LENGTH_SHORT).show();\r\n                return;\r\n            }\r\n            else {\r\n                // Add category to database\r\n                myDB.addCategory(categoryName);\r\n            }\r\n\r\n            dialog.dismiss(); // Close dialog only when successful\r\n        });\r\n    }\r\n\r\n    private boolean isCategoryAlreadyExists(String categoryName) {\r\n        // Check if the category already exists in the database\r\n        // Return true if exists, false otherwise\r\n        return categories.contains(categoryName);\r\n    }\r\n\r\n    void displayCategories() {\r\n        Cursor cursor = myDB.readCategories();\r\n        LinearLayout categoryContainer = findViewById(R.id.categoryContainer);\r\n        categoryContainer.removeAllViews(); // Clear old views\r\n\r\n        if (cursor.getCount() == 0) {\r\n            Toast.makeText(this, \"No data to display\", Toast.LENGTH_SHORT).show();\r\n        } else {\r\n            while (cursor.moveToNext()) {\r\n                String categoryName = cursor.getString(0); // Assuming first column contains category name\r\n\r\n                // Create a new button for the category\r\n                Button categoryButton = new Button(this);\r\n                categoryButton.setText(categoryName);\r\n                categoryButton.setPadding(20, 10, 20, 10);\r\n                categoryButton.setBackgroundColor(Color.parseColor(\"#FF9800\")); // Orange color\r\n                categoryButton.setTextColor(Color.WHITE);\r\n\r\n                // Set button click action\r\n                categoryButton.setOnClickListener(v -> {\r\n                    Toast.makeText(this, \"Clicked: \" + categoryName, Toast.LENGTH_SHORT).show();\r\n                    // You can start a new activity or show recipes in this category\r\n                    Intent intent = new Intent(CategoryPage.this, RecipePage.class);\r\n                    intent.putExtra(\"CATEGORY_NAME\", categoryName);\r\n                    startActivity(intent);\r\n                });\r\n\r\n                // Add button to the container layout\r\n                categoryContainer.addView(categoryButton);\r\n            }\r\n        }\r\n        cursor.close();\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/cookbook3/CategoryPage.java b/app/src/main/java/com/example/cookbook3/CategoryPage.java
+--- a/app/src/main/java/com/example/cookbook3/CategoryPage.java	(revision dc270ae361428410ce29c628ee5e6a0b04b290be)
++++ b/app/src/main/java/com/example/cookbook3/CategoryPage.java	(date 1740464043546)
+@@ -18,7 +18,6 @@
+ import androidx.core.graphics.Insets;
+ import androidx.core.view.ViewCompat;
+ import androidx.core.view.WindowInsetsCompat;
+-import androidx.recyclerview.widget.RecyclerView;
+ 
+ import java.util.ArrayList;
+ 
+@@ -45,7 +44,7 @@
+         db = myDB.getWritableDatabase();
+ 
+         returnBtn = findViewById(R.id.returnBtn);
+-        addF = findViewById(R.id.addBtn);
++        addF = findViewById(R.id.addRecipeBtn);
+ 
+ 
+         returnBtn.setOnClickListener(v -> {
+@@ -134,6 +133,7 @@
+             else {
+                 // Add category to database
+                 myDB.addCategory(categoryName);
++                displayCategories(); // Refresh the categories
+             }
+ 
+             dialog.dismiss(); // Close dialog only when successful
+@@ -155,7 +155,7 @@
+             Toast.makeText(this, "No data to display", Toast.LENGTH_SHORT).show();
+         } else {
+             while (cursor.moveToNext()) {
+-                String categoryName = cursor.getString(0); // Assuming first column contains category name
++                String categoryName = cursor.getString(1); // Assuming first column contains category name
+ 
+                 // Create a new button for the category
+                 Button categoryButton = new Button(this);
+Index: app/src/main/res/layout/activity_category.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:id=\"@+id/main\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"#FFAF53\"\r\n    android:orientation=\"vertical\"\r\n    tools:context=\".CategoryPage\">\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginBottom=\"20dp\"\r\n        android:background=\"@drawable/toplayout\"\r\n        android:orientation=\"horizontal\">\r\n\r\n        <ImageView\r\n            android:id=\"@+id/imageView\"\r\n            android:layout_width=\"57dp\"\r\n            android:layout_height=\"55dp\"\r\n            android:layout_weight=\"-50\"\r\n            app:srcCompat=\"@drawable/cookbookicon\" />\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"match_parent\"\r\n            android:layout_weight=\"-50\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <View\r\n                android:id=\"@+id/divider5\"\r\n                android:layout_width=\"5dp\"\r\n                android:layout_height=\"2.5dp\"\r\n                android:background=\"#FFAF53\" />\r\n\r\n            <TextView\r\n                android:id=\"@+id/textView\"\r\n                android:layout_width=\"wrap_content\"\r\n                android:layout_height=\"40dp\"\r\n                android:layout_weight=\"0\"\r\n                android:text=\"TextView\"\r\n                android:textAlignment=\"center\"\r\n                android:textSize=\"34sp\"\r\n                tools:text=\"Recipes\" />\r\n\r\n        </LinearLayout>\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"match_parent\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <View\r\n                android:id=\"@+id/divider7\"\r\n                android:layout_width=\"200dp\"\r\n                android:layout_height=\"10dp\"\r\n                android:layout_weight=\"-50\"\r\n                android:background=\"#FFC107\" />\r\n\r\n            <LinearLayout\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"match_parent\"\r\n                android:layout_weight=\"-50\"\r\n                android:orientation=\"horizontal\">\r\n\r\n                <View\r\n                    android:id=\"@+id/divider9\"\r\n                    android:layout_width=\"180dp\"\r\n                    android:layout_height=\"0dp\"\r\n                    android:layout_weight=\"-50\"\r\n\r\n                    android:background=\"#FFC107\" />\r\n\r\n                <ImageButton\r\n                    android:id=\"@+id/returnBtn\"\r\n                    android:layout_width=\"wrap_content\"\r\n                    android:layout_height=\"wrap_content\"\r\n                    android:layout_weight=\"-50\"\r\n                    android:background=\"#FFC107\"\r\n                    app:srcCompat=\"@drawable/returnbtn\" />\r\n            </LinearLayout>\r\n\r\n        </LinearLayout>\r\n\r\n    </LinearLayout>\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_weight=\"-50\"\r\n        android:orientation=\"vertical\">\r\n\r\n        <ScrollView\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"match_parent\">\r\n\r\n            <LinearLayout\r\n                android:id=\"@+id/categoryContainer\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:orientation=\"vertical\" />\r\n        </ScrollView>\r\n\r\n        <Button\r\n            android:id=\"@+id/addBtn\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"Add Folder\" />\r\n    </LinearLayout>\r\n\r\n</LinearLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_category.xml b/app/src/main/res/layout/activity_category.xml
+--- a/app/src/main/res/layout/activity_category.xml	(revision dc270ae361428410ce29c628ee5e6a0b04b290be)
++++ b/app/src/main/res/layout/activity_category.xml	(date 1740464043294)
+@@ -40,10 +40,9 @@
+                 android:layout_width="wrap_content"
+                 android:layout_height="40dp"
+                 android:layout_weight="0"
+-                android:text="TextView"
++                android:text="Category"
+                 android:textAlignment="center"
+-                android:textSize="34sp"
+-                tools:text="Recipes" />
++                android:textSize="34sp" />
+ 
+         </LinearLayout>
+ 
+@@ -67,7 +66,7 @@
+ 
+                 <View
+                     android:id="@+id/divider9"
+-                    android:layout_width="180dp"
++                    android:layout_width="175dp"
+                     android:layout_height="0dp"
+                     android:layout_weight="-50"
+ 
+@@ -87,7 +86,7 @@
+     </LinearLayout>
+ 
+     <LinearLayout
+-        android:layout_width="wrap_content"
++        android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_weight="-50"
+         android:orientation="vertical">
+@@ -104,10 +103,10 @@
+         </ScrollView>
+ 
+         <Button
+-            android:id="@+id/addBtn"
++            android:id="@+id/addRecipeBtn"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:text="Add Folder" />
++            android:text="Add Recipe" />
+     </LinearLayout>
+ 
+ </LinearLayout>
+\ No newline at end of file
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.CookBook3\"\r\n        tools:targetApi=\"31\">\r\n        <activity\r\n            android:name=\".CategoryPage\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision dc270ae361428410ce29c628ee5e6a0b04b290be)
++++ b/app/src/main/AndroidManifest.xml	(date 1740460806542)
+@@ -13,6 +13,9 @@
+         android:theme="@style/Theme.CookBook3"
+         tools:targetApi="31">
+         <activity
++            android:name=".RecipePage"
++            android:exported="false" />
++        <activity
+             android:name=".CategoryPage"
+             android:exported="false" />
+         <activity
+Index: app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    alias(libs.plugins.android.application)\r\n}\r\n\r\nandroid {\r\n    namespace = \"com.example.cookbook3\"\r\n    compileSdk = 35\r\n\r\n    defaultConfig {\r\n        applicationId = \"com.example.cookbook3\"\r\n        minSdk = 24\r\n        targetSdk = 35\r\n        versionCode = 1\r\n        versionName = \"1.0\"\r\n\r\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            isMinifyEnabled = false\r\n            proguardFiles(\r\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\r\n                \"proguard-rules.pro\"\r\n            )\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility = JavaVersion.VERSION_11\r\n        targetCompatibility = JavaVersion.VERSION_11\r\n    }\r\n}\r\n\r\ndependencies {\r\n\r\n    implementation(libs.appcompat)\r\n    implementation(libs.material)\r\n    implementation(libs.activity)\r\n    implementation(libs.constraintlayout)\r\n    testImplementation(libs.junit)\r\n    androidTestImplementation(libs.ext.junit)\r\n    androidTestImplementation(libs.espresso.core)\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts	(revision dc270ae361428410ce29c628ee5e6a0b04b290be)
++++ b/app/build.gradle.kts	(date 1740460806559)
+@@ -40,4 +40,5 @@
+     testImplementation(libs.junit)
+     androidTestImplementation(libs.ext.junit)
+     androidTestImplementation(libs.espresso.core)
++
+ }
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_recipe_page.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_recipe_page.xml b/app/src/main/res/layout/activity_recipe_page.xml
+new file mode 100644
+--- /dev/null	(date 1740464043274)
++++ b/app/src/main/res/layout/activity_recipe_page.xml	(date 1740464043274)
+@@ -0,0 +1,128 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/main"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:background="#FFAF53"
++    android:orientation="vertical"
++    tools:context=".CategoryPage">
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:background="@drawable/toplayout"
++        android:orientation="horizontal">
++
++        <ImageView
++            android:id="@+id/imageView"
++            android:layout_width="57dp"
++            android:layout_height="55dp"
++            android:layout_weight="-50"
++            app:srcCompat="@drawable/cookbookicon" />
++
++        <LinearLayout
++            android:layout_width="wrap_content"
++            android:layout_height="match_parent"
++            android:layout_weight="-50"
++            android:orientation="vertical">
++
++            <View
++                android:id="@+id/divider5"
++                android:layout_width="5dp"
++                android:layout_height="2.5dp"
++                android:background="#FFAF53" />
++
++            <TextView
++                android:id="@+id/textView"
++                android:layout_width="wrap_content"
++                android:layout_height="40dp"
++                android:layout_weight="0"
++                android:text="TextView"
++                android:textAlignment="center"
++                android:textSize="34sp"
++                tools:text="Recipes" />
++
++        </LinearLayout>
++
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="match_parent"
++            android:orientation="vertical">
++
++            <View
++                android:id="@+id/divider7"
++                android:layout_width="200dp"
++                android:layout_height="10dp"
++                android:layout_weight="-50"
++                android:background="#FFC107" />
++
++            <LinearLayout
++                android:layout_width="match_parent"
++                android:layout_height="match_parent"
++                android:layout_weight="-50"
++                android:orientation="horizontal">
++
++                <View
++                    android:id="@+id/divider9"
++                    android:layout_width="180dp"
++                    android:layout_height="0dp"
++                    android:layout_weight="-50"
++
++                    android:background="#FFC107" />
++
++                <ImageButton
++                    android:id="@+id/returnBtn"
++                    android:layout_width="wrap_content"
++                    android:layout_height="wrap_content"
++                    android:layout_weight="-50"
++                    android:background="#FFC107"
++                    app:srcCompat="@drawable/returnbtn" />
++            </LinearLayout>
++
++        </LinearLayout>
++
++    </LinearLayout>
++
++    <LinearLayout
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_weight="-50"
++        android:orientation="vertical">
++
++        <View
++            android:id="@+id/divider3"
++            android:layout_width="match_parent"
++            android:layout_height="50dp"
++            android:background="?android:attr/listDivider" />
++
++        <ScrollView
++            android:layout_width="match_parent"
++            android:layout_height="match_parent">
++
++            <LinearLayout
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:orientation="vertical" >
++
++                <androidx.recyclerview.widget.RecyclerView
++                    android:layout_width="match_parent"
++                    android:layout_height="match_parent" />
++            </LinearLayout>
++        </ScrollView>
++
++        <View
++            android:id="@+id/divider4"
++            android:layout_width="match_parent"
++            android:layout_height="25dp"
++            android:background="?android:attr/listDivider" />
++
++        <Button
++            android:id="@+id/addRecipeBtn"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:text="Add Folder" />
++    </LinearLayout>
++
++</LinearLayout>
+\ No newline at end of file

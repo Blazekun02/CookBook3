@@ -1,0 +1,25 @@
+Index: app/src/main/res/layout/my_row.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>    <?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    android:orientation=\"vertical\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\">\r\n\r\n    <androidx.cardview.widget.CardView\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\" >\r\n\r\n        <androidx.constraintlayout.widget.ConstraintLayout\r\n            android:\r\n\r\n        </androidx.constraintlayout.widget.ConstraintLayout>\r\n    </androidx.cardview.widget.CardView>\r\n</LinearLayout>
+===================================================================
+diff --git a/app/src/main/res/layout/my_row.xml b/app/src/main/res/layout/my_row.xml
+--- a/app/src/main/res/layout/my_row.xml	(revision ceab1245ee492e19a41ec880a105690a6ac57c9b)
++++ b/app/src/main/res/layout/my_row.xml	(date 1740459043754)
+@@ -1,4 +1,4 @@
+-    <?xml version="1.0" encoding="utf-8"?>
++<?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:orientation="vertical"
+     android:layout_width="match_parent"
+@@ -8,9 +8,5 @@
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" >
+ 
+-        <androidx.constraintlayout.widget.ConstraintLayout
+-            android:
+-
+-        </androidx.constraintlayout.widget.ConstraintLayout>
+     </androidx.cardview.widget.CardView>
+ </LinearLayout>
+\ No newline at end of file

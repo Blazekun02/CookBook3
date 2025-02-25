@@ -16,6 +16,9 @@
             android:name=".RecipeListPage"
             android:exported="false" />
         <activity
+            android:name=".RecipePage"
+            android:exported="false" />
+        <activity
             android:name=".CategoryPage"
             android:exported="false" />
         <activity

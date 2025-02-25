@@ -11,10 +11,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-
+    ImageButton recipe, grocery;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ImageButton recipe, grocery;
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);

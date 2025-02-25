@@ -1,0 +1,230 @@
+Index: app/src/main/res/layout/activity_category.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:id=\"@+id/main\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"#FFAF53\"\r\n    android:orientation=\"vertical\"\r\n    tools:context=\".CategoryPage\">\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:background=\"@drawable/toplayout\"\r\n        android:orientation=\"horizontal\">\r\n\r\n        <ImageView\r\n            android:id=\"@+id/imageView\"\r\n            android:layout_width=\"57dp\"\r\n            android:layout_height=\"55dp\"\r\n            android:layout_weight=\"-50\"\r\n            app:srcCompat=\"@drawable/cookbookicon\" />\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"match_parent\"\r\n            android:layout_weight=\"-50\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <View\r\n                android:id=\"@+id/divider5\"\r\n                android:layout_width=\"5dp\"\r\n                android:layout_height=\"2.5dp\"\r\n                android:background=\"#FFAF53\" />\r\n\r\n            <TextView\r\n                android:id=\"@+id/textView\"\r\n                android:layout_width=\"wrap_content\"\r\n                android:layout_height=\"40dp\"\r\n                android:layout_weight=\"0\"\r\n                android:text=\"TextView\"\r\n                android:textAlignment=\"center\"\r\n                android:textSize=\"34sp\"\r\n                tools:text=\"Recipes\" />\r\n\r\n        </LinearLayout>\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"match_parent\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <View\r\n                android:id=\"@+id/divider7\"\r\n                android:layout_width=\"200dp\"\r\n                android:layout_height=\"10dp\"\r\n                android:layout_weight=\"-50\"\r\n                android:background=\"#FFC107\" />\r\n\r\n            <LinearLayout\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"match_parent\"\r\n                android:layout_weight=\"-50\"\r\n                android:orientation=\"horizontal\">\r\n\r\n                <View\r\n                    android:id=\"@+id/divider9\"\r\n                    android:layout_width=\"180dp\"\r\n                    android:layout_height=\"0dp\"\r\n                    android:layout_weight=\"-50\"\r\n\r\n                    android:background=\"#FFC107\" />\r\n\r\n                <ImageButton\r\n                    android:id=\"@+id/returnBtn\"\r\n                    android:layout_width=\"wrap_content\"\r\n                    android:layout_height=\"wrap_content\"\r\n                    android:layout_weight=\"-50\"\r\n                    android:background=\"#FFC107\"\r\n                    app:srcCompat=\"@drawable/returnbtn\" />\r\n            </LinearLayout>\r\n\r\n        </LinearLayout>\r\n\r\n    </LinearLayout>\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_weight=\"-50\"\r\n        android:orientation=\"vertical\">\r\n\r\n        <View\r\n            android:id=\"@+id/divider3\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"50dp\"\r\n            android:background=\"?android:attr/listDivider\" />\r\n\r\n        <androidx.recyclerview.widget.RecyclerView\r\n            android:id=\"@+id/categoryRecyclerView\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"match_parent\">\r\n\r\n        </androidx.recyclerview.widget.RecyclerView>\r\n\r\n        <View\r\n            android:id=\"@+id/divider4\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"25dp\"\r\n            android:background=\"?android:attr/listDivider\" />\r\n\r\n        <Button\r\n            android:id=\"@+id/addBtn\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"Add Folder\" />\r\n    </LinearLayout>\r\n\r\n</LinearLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_category.xml b/app/src/main/res/layout/activity_category.xml
+--- a/app/src/main/res/layout/activity_category.xml	(revision ceab1245ee492e19a41ec880a105690a6ac57c9b)
++++ b/app/src/main/res/layout/activity_category.xml	(date 1740446002610)
+@@ -98,12 +98,16 @@
+             android:background="?android:attr/listDivider" />
+ 
+         <androidx.recyclerview.widget.RecyclerView
+-            android:id="@+id/categoryRecyclerView"
+             android:layout_width="match_parent"
+-            android:layout_height="match_parent">
++            android:layout_height="match_parent" >
+ 
+         </androidx.recyclerview.widget.RecyclerView>
+ 
++        <Spinner
++            android:id="@+id/sampleSpinner"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content" />
++
+         <View
+             android:id="@+id/divider4"
+             android:layout_width="match_parent"
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.CookBook3\"\r\n        tools:targetApi=\"31\">\r\n        <activity\r\n            android:name=\".CategoryPage\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision ceab1245ee492e19a41ec880a105690a6ac57c9b)
++++ b/app/src/main/AndroidManifest.xml	(date 1740446002650)
+@@ -13,6 +13,9 @@
+         android:theme="@style/Theme.CookBook3"
+         tools:targetApi="31">
+         <activity
++            android:name=".RecipeSelectionPage"
++            android:exported="false" />
++        <activity
+             android:name=".CategoryPage"
+             android:exported="false" />
+         <activity
+Index: app/src/main/res/layout/activity_recipe_selection_page.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_recipe_selection_page.xml b/app/src/main/res/layout/activity_recipe_selection_page.xml
+new file mode 100644
+--- /dev/null	(date 1740446002639)
++++ b/app/src/main/res/layout/activity_recipe_selection_page.xml	(date 1740446002639)
+@@ -0,0 +1,118 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/main"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:background="#FFAF53"
++    android:orientation="vertical"
++    tools:context=".CategoryPage">
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:background="@drawable/toplayout"
++        android:orientation="horizontal">
++
++        <ImageView
++            android:id="@+id/imageView"
++            android:layout_width="57dp"
++            android:layout_height="55dp"
++            android:layout_weight="-50"
++            app:srcCompat="@drawable/cookbookicon" />
++
++        <LinearLayout
++            android:layout_width="wrap_content"
++            android:layout_height="match_parent"
++            android:layout_weight="-50"
++            android:orientation="vertical">
++
++            <View
++                android:id="@+id/divider5"
++                android:layout_width="5dp"
++                android:layout_height="2.5dp"
++                android:background="#FFAF53" />
++
++            <TextView
++                android:id="@+id/textView"
++                android:layout_width="wrap_content"
++                android:layout_height="40dp"
++                android:layout_weight="0"
++                android:text="TextView"
++                android:textAlignment="center"
++                android:textSize="34sp"
++                tools:text="Recipes" />
++
++        </LinearLayout>
++
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="match_parent"
++            android:orientation="vertical">
++
++            <View
++                android:id="@+id/divider7"
++                android:layout_width="200dp"
++                android:layout_height="10dp"
++                android:layout_weight="-50"
++                android:background="#FFC107" />
++
++            <LinearLayout
++                android:layout_width="match_parent"
++                android:layout_height="match_parent"
++                android:layout_weight="-50"
++                android:orientation="horizontal">
++
++                <View
++                    android:id="@+id/divider9"
++                    android:layout_width="180dp"
++                    android:layout_height="0dp"
++                    android:layout_weight="-50"
++
++                    android:background="#FFC107" />
++
++                <ImageButton
++                    android:id="@+id/returnBtn"
++                    android:layout_width="wrap_content"
++                    android:layout_height="wrap_content"
++                    android:layout_weight="-50"
++                    android:background="#FFC107"
++                    app:srcCompat="@drawable/returnbtn" />
++            </LinearLayout>
++
++        </LinearLayout>
++
++    </LinearLayout>
++
++    <LinearLayout
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_weight="-50"
++        android:orientation="vertical">
++
++        <View
++            android:id="@+id/divider3"
++            android:layout_width="match_parent"
++            android:layout_height="50dp"
++            android:background="?android:attr/listDivider" />
++
++        <Spinner
++            android:id="@+id/sampleSpinner"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content" />
++
++        <View
++            android:id="@+id/divider4"
++            android:layout_width="match_parent"
++            android:layout_height="25dp"
++            android:background="?android:attr/listDivider" />
++
++        <Button
++            android:id="@+id/addBtn"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:text="Add Folder" />
++    </LinearLayout>
++
++</LinearLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/cookbook3/RecipeSelectionPage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/cookbook3/RecipeSelectionPage.java b/app/src/main/java/com/example/cookbook3/RecipeSelectionPage.java
+new file mode 100644
+--- /dev/null	(date 1740446002670)
++++ b/app/src/main/java/com/example/cookbook3/RecipeSelectionPage.java	(date 1740446002670)
+@@ -0,0 +1,24 @@
++package com.example.cookbook3;
++
++import android.os.Bundle;
++
++import androidx.activity.EdgeToEdge;
++import androidx.appcompat.app.AppCompatActivity;
++import androidx.core.graphics.Insets;
++import androidx.core.view.ViewCompat;
++import androidx.core.view.WindowInsetsCompat;
++
++public class RecipeSelectionPage extends AppCompatActivity {
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        EdgeToEdge.enable(this);
++        setContentView(R.layout.activity_recipe_selection_page);
++        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
++            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++            return insets;
++        });
++    }
++}
+\ No newline at end of file
+Index: app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    alias(libs.plugins.android.application)\r\n}\r\n\r\nandroid {\r\n    namespace = \"com.example.cookbook3\"\r\n    compileSdk = 35\r\n\r\n    defaultConfig {\r\n        applicationId = \"com.example.cookbook3\"\r\n        minSdk = 24\r\n        targetSdk = 35\r\n        versionCode = 1\r\n        versionName = \"1.0\"\r\n\r\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            isMinifyEnabled = false\r\n            proguardFiles(\r\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\r\n                \"proguard-rules.pro\"\r\n            )\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility = JavaVersion.VERSION_11\r\n        targetCompatibility = JavaVersion.VERSION_11\r\n    }\r\n}\r\n\r\ndependencies {\r\n\r\n    implementation(libs.appcompat)\r\n    implementation(libs.material)\r\n    implementation(libs.activity)\r\n    implementation(libs.constraintlayout)\r\n    testImplementation(libs.junit)\r\n    androidTestImplementation(libs.ext.junit)\r\n    androidTestImplementation(libs.espresso.core)\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts	(revision ceab1245ee492e19a41ec880a105690a6ac57c9b)
++++ b/app/build.gradle.kts	(date 1740446170880)
+@@ -40,4 +40,5 @@
+     testImplementation(libs.junit)
+     androidTestImplementation(libs.ext.junit)
+     androidTestImplementation(libs.espresso.core)
++
+ }
+\ No newline at end of file

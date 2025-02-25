@@ -1,0 +1,273 @@
+Index: app/src/main/java/com/example/cookbook3/DatabaseHelper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.cookbook3;\r\n\r\nimport android.content.ContentValues;\r\nimport android.content.Context;\r\nimport android.database.Cursor;\r\nimport android.database.sqlite.SQLiteDatabase;\r\nimport android.database.sqlite.SQLiteOpenHelper;\r\n\r\nimport androidx.annotation.Nullable;\r\n\r\npublic class DatabaseHelper extends SQLiteOpenHelper {\r\n    private Context context;\r\n    private static final String dbName = \"cookBook.db\";\r\n    private static final int dbVersion = 1;\r\n    private static final String catTable = \"categories\";\r\n    private static final String recTable = \"recipes\";\r\n    private static final String ingTable = \"ingredients\";\r\n    private static final String recIngTable = \"recipeIngredients\";\r\n    private static final String recPrepTable = \"recipePreparations\";\r\n    private static final String shopListTable = \"shoppingList\";\r\n    private static final String catCol1 = \"categoryID\";\r\n    private static final String catCol2 = \"categoryName\";\r\n    private static final String recCol1 = \"recipeID\";\r\n    private static final String recCol2 = \"recipeName\";\r\n    private static final String recCol3 = \"description\";\r\n    private static final String recCol4 = \"categoryID\";\r\n    private static final String ingCol1 = \"ingredientID\";\r\n    private static final String ingCol2 = \"ingredientName\";\r\n    private static final String recIngCol1 = \"recipe_IngredientsID\";\r\n    private static final String recIngCol2 = \"recipeID\";\r\n    private static final String recIngCol3 = \"ingredientID\";\r\n    private static final String recIngCol4 = \"quantity\";\r\n    private static final String recIngCol5 = \"unit\";\r\n    private static final String recPrepCol1 = \"recipe_PreparationsID\";\r\n    private static final String recPrepCol2 = \"recipeID\";\r\n    private static final String recPrepCol3 = \"stepNumber\";\r\n    private static final String recPrepCol4 = \"description\";\r\n    private static final String shopListCol1 = \"shoppingListID\";\r\n    private static final String shopListCol2 = \"recipeID\";\r\n    private static final String shopListCol3 = \"ingredientID\";\r\n    private static final String shopListCol4 = \"quantity\";\r\n    private static final String shopListCol5 = \"unit\";\r\n    private static final String shopListCol6 = \"purchase\";\r\n\r\n    public DatabaseHelper(@Nullable Context context) {\r\n        super(context, dbName, null, dbVersion);\r\n        this.context = context;\r\n    }\r\n\r\n    // Create the database tables\r\n    @Override\r\n    public void onCreate(SQLiteDatabase db) {\r\n        db.execSQL(\"CREATE TABLE IF NOT EXISTS \" + catTable + \"(\" +\r\n                        catCol1 + \" INTEGER PRIMARY KEY AUTOINCREMENT, \" +\r\n                        catCol2 + \" TEXT NOT NULL);\"\r\n        );\r\n        db.execSQL(\"CREATE TABLE IF NOT EXISTS \" + recTable + \"(\" +\r\n                        recCol1 + \" INTEGER PRIMARY KEY AUTOINCREMENT, \" +\r\n                        recCol2 + \" TEXT NOT NULL, \" +\r\n                        recCol3 + \" TEXT NOT NULL, \" +\r\n                        recCol4 + \" INTEGER NOT NULL, \" + \"FOREIGN KEY (\" + recCol4 + \") REFERENCES \" + catTable + \"(\" + catCol1 + \"));\"\r\n        );\r\n        db.execSQL(\"CREATE TABLE IF NOT EXISTS \" + ingTable + \"(\" +\r\n                        ingCol1 + \" INTEGER PRIMARY KEY AUTOINCREMENT, \" +\r\n                        ingCol2 + \" TEXT NOT NULL);\"\r\n        );\r\n        db.execSQL(\"CREATE TABLE IF NOT EXISTS \" + recIngTable + \"(\" +\r\n                        recIngCol1 + \" INTEGER PRIMARY KEY AUTOINCREMENT, \" +\r\n                        recIngCol2 + \" INTEGER NOT NULL, \" +\r\n                        recIngCol3 + \" INTEGER NOT NULL, \" +\r\n                        recIngCol4 + \" REAL NOT NULL, \" +\r\n                        recIngCol5 + \" TEXT NOT NULL, \" +\r\n                        \"FOREIGN KEY (\" + recIngCol2 + \") REFERENCES \" + recTable + \"(\" + recCol1 + \"), \" +\r\n                        \"FOREIGN KEY (\" + recIngCol3 + \") REFERENCES \" + ingTable + \"(\" + ingCol1 + \"));\"\r\n        );\r\n        db.execSQL(\"CREATE TABLE IF NOT EXISTS \" + recPrepTable + \"(\" +\r\n                        recPrepCol1 + \" INTEGER PRIMARY KEY AUTOINCREMENT, \" +\r\n                        recPrepCol2 + \" INTEGER NOT NULL, \" +\r\n                        recPrepCol3 + \" INTEGER NOT NULL, \" +\r\n                        recPrepCol4 + \" TEXT NOT NULL, \" +\r\n                        \"FOREIGN KEY (\" + recPrepCol2 + \") REFERENCES \" + recTable + \"(\" + recCol1 + \"));\"\r\n        );\r\n        db.execSQL(\"CREATE TABLE IF NOT EXISTS \" + shopListTable + \"(\" +\r\n                        shopListCol1 + \" INTEGER PRIMARY KEY AUTOINCREMENT, \" +\r\n                        shopListCol2 + \" INTEGER NOT NULL, \" +\r\n                        shopListCol3 + \" INTEGER NOT NULL, \" +\r\n                        shopListCol4 + \" REAL NOT NULL, \" +\r\n                        shopListCol5 + \" TEXT NOT NULL, \" +\r\n                        shopListCol6 + \" INTEGER NOT NULL, \" +\r\n                        \"FOREIGN KEY (\" + shopListCol2 + \") REFERENCES \" + recTable + \"(\" + recCol1 + \"), \" +\r\n                        \"FOREIGN KEY (\" + shopListCol3 + \") REFERENCES \" + ingTable + \"(\" + ingCol1 + \"));\"\r\n        );\r\n    }\r\n\r\n    //upgrade the database\r\n    @Override\r\n    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {\r\n        sqLiteDatabase.execSQL(\"DROP TABLE IF EXISTS \" + catTable);\r\n        sqLiteDatabase.execSQL(\"DROP TABLE IF EXISTS \" + recTable);\r\n        sqLiteDatabase.execSQL(\"DROP TABLE IF EXISTS \" + ingTable);\r\n        sqLiteDatabase.execSQL(\"DROP TABLE IF EXISTS \" + recIngTable);\r\n        sqLiteDatabase.execSQL(\"DROP TABLE IF EXISTS \" + recPrepTable);\r\n        sqLiteDatabase.execSQL(\"DROP TABLE IF EXISTS \" + shopListTable);\r\n        onCreate(sqLiteDatabase);\r\n    }\r\n\r\n    void addCategory(String catName) {\r\n        SQLiteDatabase db = this.getWritableDatabase();\r\n        ContentValues cv = new ContentValues();\r\n\r\n        cv.put(catCol2, catName);\r\n        db.insert(catTable, null, cv);\r\n\r\n    }\r\n\r\n    void addRecipe(String recName, String recDesc, int catID) {\r\n        SQLiteDatabase db = this.getWritableDatabase();\r\n        ContentValues cv = new ContentValues();\r\n\r\n        cv.put(recCol2, recName);\r\n        cv.put(recCol3, recDesc);\r\n        cv.put(recCol4, catID);\r\n    }\r\n\r\n    Cursor readCategories() {\r\n        String query = \"SELECT * FROM \" + catTable;\r\n        SQLiteDatabase db = this.getReadableDatabase();\r\n\r\n        Cursor cursor = null;\r\n        if (db != null) {\r\n            cursor = db.rawQuery(query, null);\r\n        }\r\n        return cursor;\r\n    }\r\n\r\n    void compareCategory(String catName) {\r\n        SQLiteDatabase db = this.getWritableDatabase();\r\n        Cursor cursor = db.rawQuery(\"SELECT * FROM \" + catTable + \" WHERE \" + catCol2 + \" = '\" + catName + \"';\", null);\r\n        return cursor;\r\n\r\n    }\r\n\r\n    void addIngredient(String ingName) {\r\n        SQLiteDatabase db = this.getWritableDatabase();\r\n        db.execSQL(\"INSERT INTO \" + ingTable + \" (\" + ingCol2 + \") VALUES ('\" + ingName + \"');\");\r\n    }\r\n\r\n    void addRecipeIngredient(int recID, int ingID, double quantity, String unit) {\r\n        SQLiteDatabase db = this.getWritableDatabase();\r\n        db.execSQL(\"INSERT INTO \" + recIngTable + \" (\" + recIngCol2 + \", \" + recIngCol3 + \", \" + recIngCol4 + \", \" + recIngCol5 + \") VALUES (\" + recID + \", \" + ingID + \", \" + quantity + \", '\" + unit + \"');\");\r\n    }\r\n\r\n    void addRecipePreparation(int recID, int stepNum, String desc) {\r\n        SQLiteDatabase db = this.getWritableDatabase();\r\n        db.execSQL(\"INSERT INTO \" + recPrepTable + \" (\" + recPrepCol2 + \", \" + recPrepCol3 + \", \" + recPrepCol4 + \") VALUES (\" + recID + \", \" + stepNum + \", '\" + desc + \"');\");\r\n    }\r\n\r\n    void addShoppingListItem(int recID, int ingID, double quantity, String unit, int purchase) {\r\n        SQLiteDatabase db = this.getWritableDatabase();\r\n        db.execSQL(\"INSERT INTO \" + shopListTable + \" (\" + shopListCol2 + \", \" + shopListCol3 + \", \" + shopListCol4 + \", \" + shopListCol5 + \", \" + shopListCol6 + \") VALUES (\" + recID + \", \" + ingID + \", \" + quantity + \", '\" + unit + \"', \" + purchase + \");\");\r\n    }\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/cookbook3/DatabaseHelper.java b/app/src/main/java/com/example/cookbook3/DatabaseHelper.java
+--- a/app/src/main/java/com/example/cookbook3/DatabaseHelper.java	(revision ceab1245ee492e19a41ec880a105690a6ac57c9b)
++++ b/app/src/main/java/com/example/cookbook3/DatabaseHelper.java	(date 1740456620297)
+@@ -136,8 +136,7 @@
+     void compareCategory(String catName) {
+         SQLiteDatabase db = this.getWritableDatabase();
+         Cursor cursor = db.rawQuery("SELECT * FROM " + catTable + " WHERE " + catCol2 + " = '" + catName + "';", null);
+-        return cursor;
+-
++//        return cursor;
+     }
+ 
+     void addIngredient(String ingName) {
+Index: app/src/main/res/layout/activity_category.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:id=\"@+id/main\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"#FFAF53\"\r\n    android:orientation=\"vertical\"\r\n    tools:context=\".CategoryPage\">\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:background=\"@drawable/toplayout\"\r\n        android:orientation=\"horizontal\">\r\n\r\n        <ImageView\r\n            android:id=\"@+id/imageView\"\r\n            android:layout_width=\"57dp\"\r\n            android:layout_height=\"55dp\"\r\n            android:layout_weight=\"-50\"\r\n            app:srcCompat=\"@drawable/cookbookicon\" />\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"match_parent\"\r\n            android:layout_weight=\"-50\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <View\r\n                android:id=\"@+id/divider5\"\r\n                android:layout_width=\"5dp\"\r\n                android:layout_height=\"2.5dp\"\r\n                android:background=\"#FFAF53\" />\r\n\r\n            <TextView\r\n                android:id=\"@+id/textView\"\r\n                android:layout_width=\"wrap_content\"\r\n                android:layout_height=\"40dp\"\r\n                android:layout_weight=\"0\"\r\n                android:text=\"TextView\"\r\n                android:textAlignment=\"center\"\r\n                android:textSize=\"34sp\"\r\n                tools:text=\"Recipes\" />\r\n\r\n        </LinearLayout>\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"match_parent\"\r\n            android:orientation=\"vertical\">\r\n\r\n            <View\r\n                android:id=\"@+id/divider7\"\r\n                android:layout_width=\"200dp\"\r\n                android:layout_height=\"10dp\"\r\n                android:layout_weight=\"-50\"\r\n                android:background=\"#FFC107\" />\r\n\r\n            <LinearLayout\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"match_parent\"\r\n                android:layout_weight=\"-50\"\r\n                android:orientation=\"horizontal\">\r\n\r\n                <View\r\n                    android:id=\"@+id/divider9\"\r\n                    android:layout_width=\"180dp\"\r\n                    android:layout_height=\"0dp\"\r\n                    android:layout_weight=\"-50\"\r\n\r\n                    android:background=\"#FFC107\" />\r\n\r\n                <ImageButton\r\n                    android:id=\"@+id/returnBtn\"\r\n                    android:layout_width=\"wrap_content\"\r\n                    android:layout_height=\"wrap_content\"\r\n                    android:layout_weight=\"-50\"\r\n                    android:background=\"#FFC107\"\r\n                    app:srcCompat=\"@drawable/returnbtn\" />\r\n            </LinearLayout>\r\n\r\n        </LinearLayout>\r\n\r\n    </LinearLayout>\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_weight=\"-50\"\r\n        android:orientation=\"vertical\">\r\n\r\n        <View\r\n            android:id=\"@+id/divider3\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"50dp\"\r\n            android:background=\"?android:attr/listDivider\" />\r\n\r\n        <androidx.recyclerview.widget.RecyclerView\r\n            android:id=\"@+id/categoryRecyclerView\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"match_parent\">\r\n\r\n        </androidx.recyclerview.widget.RecyclerView>\r\n\r\n        <View\r\n            android:id=\"@+id/divider4\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"25dp\"\r\n            android:background=\"?android:attr/listDivider\" />\r\n\r\n        <Button\r\n            android:id=\"@+id/addBtn\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"Add Folder\" />\r\n    </LinearLayout>\r\n\r\n</LinearLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_category.xml b/app/src/main/res/layout/activity_category.xml
+--- a/app/src/main/res/layout/activity_category.xml	(revision ceab1245ee492e19a41ec880a105690a6ac57c9b)
++++ b/app/src/main/res/layout/activity_category.xml	(date 1740460530857)
+@@ -39,10 +39,9 @@
+                 android:layout_width="wrap_content"
+                 android:layout_height="40dp"
+                 android:layout_weight="0"
+-                android:text="TextView"
++                android:text="Category"
+                 android:textAlignment="center"
+-                android:textSize="34sp"
+-                tools:text="Recipes" />
++                android:textSize="34sp" />
+ 
+         </LinearLayout>
+ 
+@@ -97,12 +96,15 @@
+             android:layout_height="50dp"
+             android:background="?android:attr/listDivider" />
+ 
+-        <androidx.recyclerview.widget.RecyclerView
+-            android:id="@+id/categoryRecyclerView"
++        <ScrollView
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+ 
+-        </androidx.recyclerview.widget.RecyclerView>
++            <LinearLayout
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:orientation="vertical" />
++        </ScrollView>
+ 
+         <View
+             android:id="@+id/divider4"
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.CookBook3\"\r\n        tools:targetApi=\"31\">\r\n        <activity\r\n            android:name=\".CategoryPage\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision ceab1245ee492e19a41ec880a105690a6ac57c9b)
++++ b/app/src/main/AndroidManifest.xml	(date 1740457145887)
+@@ -13,6 +13,9 @@
+         android:theme="@style/Theme.CookBook3"
+         tools:targetApi="31">
+         <activity
++            android:name=".RecipePage"
++            android:exported="false" />
++        <activity
+             android:name=".CategoryPage"
+             android:exported="false" />
+         <activity
+Index: app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    alias(libs.plugins.android.application)\r\n}\r\n\r\nandroid {\r\n    namespace = \"com.example.cookbook3\"\r\n    compileSdk = 35\r\n\r\n    defaultConfig {\r\n        applicationId = \"com.example.cookbook3\"\r\n        minSdk = 24\r\n        targetSdk = 35\r\n        versionCode = 1\r\n        versionName = \"1.0\"\r\n\r\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            isMinifyEnabled = false\r\n            proguardFiles(\r\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\r\n                \"proguard-rules.pro\"\r\n            )\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility = JavaVersion.VERSION_11\r\n        targetCompatibility = JavaVersion.VERSION_11\r\n    }\r\n}\r\n\r\ndependencies {\r\n\r\n    implementation(libs.appcompat)\r\n    implementation(libs.material)\r\n    implementation(libs.activity)\r\n    implementation(libs.constraintlayout)\r\n    testImplementation(libs.junit)\r\n    androidTestImplementation(libs.ext.junit)\r\n    androidTestImplementation(libs.espresso.core)\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts	(revision ceab1245ee492e19a41ec880a105690a6ac57c9b)
++++ b/app/build.gradle.kts	(date 1740446210050)
+@@ -40,4 +40,5 @@
+     testImplementation(libs.junit)
+     androidTestImplementation(libs.ext.junit)
+     androidTestImplementation(libs.espresso.core)
++
+ }
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_recipe_page.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_recipe_page.xml b/app/src/main/res/layout/activity_recipe_page.xml
+new file mode 100644
+--- /dev/null	(date 1740459819802)
++++ b/app/src/main/res/layout/activity_recipe_page.xml	(date 1740459819802)
+@@ -0,0 +1,128 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/main"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:background="#FFAF53"
++    android:orientation="vertical"
++    tools:context=".CategoryPage">
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:background="@drawable/toplayout"
++        android:orientation="horizontal">
++
++        <ImageView
++            android:id="@+id/imageView"
++            android:layout_width="57dp"
++            android:layout_height="55dp"
++            android:layout_weight="-50"
++            app:srcCompat="@drawable/cookbookicon" />
++
++        <LinearLayout
++            android:layout_width="wrap_content"
++            android:layout_height="match_parent"
++            android:layout_weight="-50"
++            android:orientation="vertical">
++
++            <View
++                android:id="@+id/divider5"
++                android:layout_width="5dp"
++                android:layout_height="2.5dp"
++                android:background="#FFAF53" />
++
++            <TextView
++                android:id="@+id/textView"
++                android:layout_width="wrap_content"
++                android:layout_height="40dp"
++                android:layout_weight="0"
++                android:text="TextView"
++                android:textAlignment="center"
++                android:textSize="34sp"
++                tools:text="Recipes" />
++
++        </LinearLayout>
++
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="match_parent"
++            android:orientation="vertical">
++
++            <View
++                android:id="@+id/divider7"
++                android:layout_width="200dp"
++                android:layout_height="10dp"
++                android:layout_weight="-50"
++                android:background="#FFC107" />
++
++            <LinearLayout
++                android:layout_width="match_parent"
++                android:layout_height="match_parent"
++                android:layout_weight="-50"
++                android:orientation="horizontal">
++
++                <View
++                    android:id="@+id/divider9"
++                    android:layout_width="180dp"
++                    android:layout_height="0dp"
++                    android:layout_weight="-50"
++
++                    android:background="#FFC107" />
++
++                <ImageButton
++                    android:id="@+id/returnBtn"
++                    android:layout_width="wrap_content"
++                    android:layout_height="wrap_content"
++                    android:layout_weight="-50"
++                    android:background="#FFC107"
++                    app:srcCompat="@drawable/returnbtn" />
++            </LinearLayout>
++
++        </LinearLayout>
++
++    </LinearLayout>
++
++    <LinearLayout
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_weight="-50"
++        android:orientation="vertical">
++
++        <View
++            android:id="@+id/divider3"
++            android:layout_width="match_parent"
++            android:layout_height="50dp"
++            android:background="?android:attr/listDivider" />
++
++        <ScrollView
++            android:layout_width="match_parent"
++            android:layout_height="match_parent">
++
++            <LinearLayout
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:orientation="vertical" >
++
++                <androidx.recyclerview.widget.RecyclerView
++                    android:layout_width="match_parent"
++                    android:layout_height="match_parent" />
++            </LinearLayout>
++        </ScrollView>
++
++        <View
++            android:id="@+id/divider4"
++            android:layout_width="match_parent"
++            android:layout_height="25dp"
++            android:background="?android:attr/listDivider" />
++
++        <Button
++            android:id="@+id/addBtn"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:text="Add Folder" />
++    </LinearLayout>
++
++</LinearLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/cookbook3/RecipePage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/cookbook3/RecipePage.java b/app/src/main/java/com/example/cookbook3/RecipePage.java
+new file mode 100644
+--- /dev/null	(date 1740457145863)
++++ b/app/src/main/java/com/example/cookbook3/RecipePage.java	(date 1740457145863)
+@@ -0,0 +1,24 @@
++package com.example.cookbook3;
++
++import android.os.Bundle;
++
++import androidx.activity.EdgeToEdge;
++import androidx.appcompat.app.AppCompatActivity;
++import androidx.core.graphics.Insets;
++import androidx.core.view.ViewCompat;
++import androidx.core.view.WindowInsetsCompat;
++
++public class RecipePage extends AppCompatActivity {
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        EdgeToEdge.enable(this);
++        setContentView(R.layout.activity_recipe_page);
++        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
++            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++            return insets;
++        });
++    }
++}
+\ No newline at end of file
