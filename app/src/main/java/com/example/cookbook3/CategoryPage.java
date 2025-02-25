@@ -1,6 +1,8 @@
 package com.example.cookbook3;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -17,12 +19,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 public class CategoryPage extends AppCompatActivity {
 
     ImageButton returnBtn;
     Button addF;
-    Spinner sspinner;
+    RecyclerView recyclerView;
+    DatabaseHelper myDB;
+    SQLiteDatabase db;
+    ArrayList<String> categories = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -34,10 +43,12 @@ public class CategoryPage extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        myDB = new DatabaseHelper(CategoryPage.this);
+        db = myDB.getWritableDatabase();
 
+        recyclerView = findViewById(R.id.categoryRecyclerView);
         returnBtn = findViewById(R.id.returnBtn);
         addF = findViewById(R.id.addBtn);
-        sspinner = findViewById(R.id.sampleSpinner);
 
 
         returnBtn.setOnClickListener(v -> {
@@ -46,6 +57,8 @@ public class CategoryPage extends AppCompatActivity {
         });
 
         addF.setOnClickListener(v -> showAddCategoryDialog());
+        // Display the categories in the recycler view
+        displayData();
 
     }
 
@@ -60,7 +73,7 @@ public class CategoryPage extends AppCompatActivity {
 
         // Category Name Input
         final EditText inputCatName = new EditText(this);
-        inputCatName.setHint("Enter subject name");
+        inputCatName.setHint("Enter Category name");
         layout.addView(inputCatName);
 
         builder.setView(layout);
@@ -98,7 +111,7 @@ public class CategoryPage extends AppCompatActivity {
         addButton.setText("Add");
         addButton.setTextSize(16);
         addButton.setPadding(20, 10, 20, 10);
-        addButton.setBackgroundColor(Color.parseColor("#e7af41")); // Yellow button
+        addButton.setBackgroundColor(Color.parseColor("#FFC107")); // Yellow button
         addButton.setTextColor(Color.WHITE);
         addButton.setLayoutParams(buttonParams);
 
@@ -121,6 +134,10 @@ public class CategoryPage extends AppCompatActivity {
                 Toast.makeText(v.getContext(), "Subject already exists! Choose a different name.", Toast.LENGTH_SHORT).show();
                 return;
             }
+            else {
+                // Add category to database
+                myDB.addCategory(categoryName);
+            }
 
             dialog.dismiss(); // Close dialog only when successful
         });
@@ -129,6 +146,19 @@ public class CategoryPage extends AppCompatActivity {
     private boolean isCategoryAlreadyExists(String categoryName) {
         // Check if the category already exists in the database
         // Return true if exists, false otherwise
-        return false;
+        return categories.contains(categoryName);
+    }
+
+    void displayData() {
+        // Display the categories in the recycler view
+        Cursor cursor = myDB.readCategories();
+        if (cursor.getCount() == 0) {
+            Toast.makeText(this, "No data to display", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                categories.add(cursor.getString(0));
+                categories.add(cursor.getString(1));
+            }
+        }
     }
 }

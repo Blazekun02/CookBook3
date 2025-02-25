@@ -2,15 +2,16 @@ package com.example.cookbook3;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    private final Context context;
-    private static final String dbName = "cookBook";
+    private Context context;
+    private static final String dbName = "cookBook.db";
+    private static final int dbVersion = 1;
     private static final String catTable = "categories";
     private static final String recTable = "recipes";
     private static final String ingTable = "ingredients";
@@ -42,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String shopListCol6 = "purchase";
 
     public DatabaseHelper(@Nullable Context context) {
-        super(context, dbName, null, 1);
+        super(context, dbName, null, dbVersion);
         this.context = context;
     }
 
@@ -108,12 +109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
 
         cv.put(catCol2, catName);
-        long result = db.insert(catTable, null, cv);
-        if (result == -1) {
-            Toast.makeText(null, "Failed to add category", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(null, "Category added successfully", Toast.LENGTH_SHORT).show();
-        }
+        db.insert(catTable, null, cv);
 
     }
 
@@ -124,6 +120,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(recCol2, recName);
         cv.put(recCol3, recDesc);
         cv.put(recCol4, catID);
+    }
+
+    Cursor readCategories() {
+        String query = "SELECT * FROM " + catTable;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, null);
+        }
+        return cursor;
+    }
+
+    void compareCategory(String catName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + catTable + " WHERE " + catCol2 + " = '" + catName + "';", null);
+        return cursor;
+
     }
 
     void addIngredient(String ingName) {
@@ -145,4 +159,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO " + shopListTable + " (" + shopListCol2 + ", " + shopListCol3 + ", " + shopListCol4 + ", " + shopListCol5 + ", " + shopListCol6 + ") VALUES (" + recID + ", " + ingID + ", " + quantity + ", '" + unit + "', " + purchase + ");");
     }
+
+
 }

@@ -98,15 +98,11 @@
             android:background="?android:attr/listDivider" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/categoryRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent">
 
         </androidx.recyclerview.widget.RecyclerView>
-
-        <Spinner
-            android:id="@+id/sampleSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <View
             android:id="@+id/divider4"
