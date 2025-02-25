@@ -12,7 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-    Button recipe, grocery;
+    Button recipe;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         recipe = findViewById(R.id.recipeBtn);
-        grocery = findViewById(R.id.groceryBtn);
 
         recipe.setOnClickListener(v -> {
             Intent intent1 = new Intent(MainActivity.this, CategoryPage.class);

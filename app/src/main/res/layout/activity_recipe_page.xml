@@ -117,6 +117,7 @@
             android:id="@+id/addRecipeBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#c57e39"
             android:text="Add Recipe" />
     </LinearLayout>
 
