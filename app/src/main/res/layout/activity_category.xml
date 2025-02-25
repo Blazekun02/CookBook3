@@ -96,8 +96,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/material_emphasis_medium">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:id="@+id/categoryContainer"

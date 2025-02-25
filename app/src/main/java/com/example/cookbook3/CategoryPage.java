@@ -22,7 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class CategoryPage extends AppCompatActivity {
 
     ImageButton returnBtn;
-    Button addF;
+    Button addCategory;
     DatabaseHelper myDB;
 
     @Override
@@ -39,14 +39,14 @@ public class CategoryPage extends AppCompatActivity {
         myDB = new DatabaseHelper(CategoryPage.this);
 
         returnBtn = findViewById(R.id.returntocategoryBtns);
-        addF = findViewById(R.id.addRecipeBtn);
+        addCategory = findViewById(R.id.addRecipeBtn);
 
         returnBtn.setOnClickListener(v -> {
             Intent intent1 = new Intent(CategoryPage.this, MainActivity.class);
             startActivity(intent1);
         });
 
-        addF.setOnClickListener(v -> showAddCategoryDialog());
+        addCategory.setOnClickListener(v -> showAddCategoryDialog());
 
         displayCategories();
     }

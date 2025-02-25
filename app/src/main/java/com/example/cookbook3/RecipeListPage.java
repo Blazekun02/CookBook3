@@ -46,7 +46,7 @@ public class RecipeListPage extends AppCompatActivity {
 
     private void showAddRecipeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Set Recipe");
+        builder.setTitle("New Recipe");
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
