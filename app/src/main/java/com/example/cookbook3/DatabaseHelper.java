@@ -130,20 +130,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addRecipe(String recipeName, String description, Integer categoryID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(recCol2, recipeName);
-        cv.put(recCol3, description);
-        cv.put(recCol4, categoryID);
-        db.insert(recTable, null, cv);
-        db.close();
-    }
-
     public void updateCategory(String categoryId, String newCategoryName) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(catCol2, newCategoryName);
+
         db.update(catTable, contentValues, catCol1 + " = ?", new String[]{categoryId});
         db.close();
     }
@@ -159,8 +150,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + catTable, null);
     }
 
-    public Cursor compareCategory(String catName) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + catTable + " WHERE " + catCol2 + " = ?", new String[]{catName});
+    public void addRecipe(String recipeName, String description, Integer categoryID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(recCol2, recipeName);
+        cv.put(recCol3, description);
+        cv.put(recCol4, categoryID);
+        db.insert(recTable, null, cv);
+        db.close();
     }
+
+    public Cursor getRecipes(int categoryID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + recTable + " WHERE " + recCol4 + " = ?", new String[]{String.valueOf(categoryID)});
+    }
+
+    public void updateRecipe(int recipeID, String newName, String newDesc) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(recCol2, newName);
+        values.put(recCol3, newDesc);
+
+        db.update(recTable, values, recCol1 + " =?", new String[]{String.valueOf(recipeID)});
+        db.close();
+    }
+
+    public void deleteRecipe(int recipeID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(recTable, recCol1 + "=?", new String[]{String.valueOf(recipeID)});
+        db.close();
+    }
+
+    public Cursor getRecipeDetails(int recipeID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT " + recCol2 + ", " + recCol3 +
+                        " FROM " + recTable +
+                        " WHERE " + recCol1 + " = ?",
+                new String[]{String.valueOf(recipeID)});
+    }
+
+    // Get ingredients for a specific recipe
+    public Cursor getRecipeIngredients(int recipeID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT i." + ingCol2 + ", ri." + recIngCol4 + ", ri." + recIngCol5 +
+                        " FROM " + recIngTable + " ri" +
+                        " JOIN " + ingTable + " i ON ri." + recIngCol3 + " = i." + ingCol1 +
+                        " WHERE ri." + recIngCol2 + " = ?",
+                new String[]{String.valueOf(recipeID)});
+    }
+
+    // Get preparation steps for a specific recipe
+    public Cursor getRecipeSteps(int recipeID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT " + recPrepCol3 + ", " + recPrepCol4 +
+                        " FROM " + recPrepTable +
+                        " WHERE " + recPrepCol2 + " = ? ORDER BY " + recPrepCol3 + " ASC",
+                new String[]{String.valueOf(recipeID)});
+    }
+
+
 }

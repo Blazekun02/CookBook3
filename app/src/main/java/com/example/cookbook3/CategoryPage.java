@@ -38,8 +38,8 @@ public class CategoryPage extends AppCompatActivity {
 
         myDB = new DatabaseHelper(CategoryPage.this);
 
-        returnBtn = findViewById(R.id.returntocategoryBtns);
-        addCategory = findViewById(R.id.addRecipeBtn);
+        returnBtn = findViewById(R.id.returnToRecipeListBtn);
+        addCategory = findViewById(R.id.addCategoryBtn);
 
         returnBtn.setOnClickListener(v -> {
             Intent intent1 = new Intent(CategoryPage.this, MainActivity.class);
@@ -53,7 +53,7 @@ public class CategoryPage extends AppCompatActivity {
 
     private void showAddCategoryDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Set Category");
+        builder.setTitle("Add Category");
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -122,6 +122,7 @@ public class CategoryPage extends AppCompatActivity {
 
                 categoryButton.setOnClickListener(v -> {
                     Intent intent = new Intent(CategoryPage.this, RecipeListPage.class);
+                    intent.putExtra("selectedCategoryID", Integer.parseInt(categoryId));
                     intent.putExtra("CATEGORY_NAME", categoryName);
                     startActivity(intent);
                 });
@@ -183,6 +184,10 @@ public class CategoryPage extends AppCompatActivity {
             String newCategoryName = inputCatName.getText().toString().trim();
             if (newCategoryName.isEmpty()) {
                 Toast.makeText(this, "Category name cannot be empty!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (isCategoryAlreadyExists(newCategoryName)) {
+                Toast.makeText(this, "Category already exists!", Toast.LENGTH_SHORT).show();
                 return;
             }
             myDB.updateCategory(categoryId, newCategoryName);

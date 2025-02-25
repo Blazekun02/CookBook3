@@ -73,7 +73,7 @@
                     android:background="#FFC107" />
 
                 <ImageButton
-                    android:id="@+id/returntocategoryBtns"
+                    android:id="@+id/returnToRecipeListBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="-50"
